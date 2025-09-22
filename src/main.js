@@ -5,6 +5,7 @@
  * @returns {number}
  */
 function calculateSimpleRevenue(purchase, _product) {
+    const { discount, sale_price, quantity } = purchase;
    // @TODO: Расчет выручки от операции
 }
 
@@ -16,7 +17,9 @@ function calculateSimpleRevenue(purchase, _product) {
  * @returns {number}
  */
 function calculateBonusByProfit(index, total, seller) {
+    const { profit } = seller;
     // @TODO: Расчет бонуса от позиции в рейтинге
+
 }
 
 /**
@@ -26,6 +29,7 @@ function calculateBonusByProfit(index, total, seller) {
  * @returns {{revenue, top_products, bonus, name, sales_count, profit, seller_id}[]}
  */
 function analyzeSalesData(data, options) {
+    const { calculateRevenue, calculateBonus } = options;
     // @TODO: Проверка входных данных
 
     // @TODO: Проверка наличия опций
