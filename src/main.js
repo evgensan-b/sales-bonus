@@ -76,9 +76,29 @@ function analyzeSalesData(data, options) {
     const sellerIndex = Object.fromEntries(sellerStats.map(item => [item.id, item]));
     const productIndex = Object.fromEntries(data.products.map(item => [item.sku, item]));
     // @TODO: Расчет выручки и прибыли для каждого продавца
+    data.purchase_records.forEach(record => { // Чек
+        const seller = sellerIndex[record.seller_id]; // Продавец
 
+        seller.sales_count++; // Увеличить количество продаж
+        seller.revenue += record.total_amount; // Увеличить общую сумму всех продаж
+        
+        record.items.forEach(item => { // Расчёт прибыли для каждого товара
+            const product = productIndex[item.sku]; // Товар
+            const cost = product.purchase_price * item.quantity; // Посчитать себестоимость (cost) товара как product.purchase_price, умноженную на количество товаров из чека
+            const revenue = calculateSimpleRevenue(item); // Посчитать выручку (revenue) с учётом скидки через функцию calculateRevenue
+            const profit = revenue - cost; // Посчитать прибыль: выручка минус себестоимость
+
+            seller.profit += profit; // Увеличить общую накопленную прибыль (profit) у продавца
+
+            if (!seller.products_sold[item.sku]) { // Учёт количества проданных товаров
+                seller.products_sold[item.sku] = 0;
+            }
+            
+            seller.products_sold[item.sku] += item.quantity; // По артикулу товара увеличить его проданное количество у продавца
+        });
+    });
     // @TODO: Сортировка продавцов по прибыли
-
+    sellerStats.sort((a, b) => b.profit - a.profit);
     // @TODO: Назначение премий на основе ранжирования
 
     // @TODO: Подготовка итоговой коллекции с нужными полями
